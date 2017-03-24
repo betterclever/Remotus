@@ -24,7 +24,7 @@ public class DownloadViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.statusTextView)
     public TextView statusTextView;
     
-    @BindView(R.id.progress_bar)
+    @BindView(R.id.progressBar)
     public ProgressBar progressBar;
     
     

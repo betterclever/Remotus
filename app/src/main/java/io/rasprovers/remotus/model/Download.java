@@ -8,7 +8,7 @@ public class Download {
 
     @SerializedName("ID")
     @Expose
-    private Integer id;
+    private long id;
     @SerializedName("name")
     @Expose
     private String name;
@@ -25,7 +25,11 @@ public class Download {
     @Expose
     private String status;
     
-    public Download(Integer id, String name, String uid, String url, String status) {
+    public Download(){
+        
+    }
+    
+    public Download(long id, String name, String uid, String url, String status) {
         this.id = id;
         this.name = name;
         this.uid = uid;
@@ -33,11 +37,11 @@ public class Download {
         this.status = status;
     }
     
-    public Integer getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(long id) {
         this.id = id;
     }
 

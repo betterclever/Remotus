@@ -9,6 +9,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -16,10 +17,13 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.firebase.ui.auth.IdpResponse;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.rasprovers.remotus.R;
+import io.rasprovers.remotus.adapter.DownloadsAdapter;
 
 public class MainActivity extends AppCompatActivity
     implements NavigationView.OnNavigationItemSelectedListener {
@@ -65,6 +69,11 @@ public class MainActivity extends AppCompatActivity
     }
     
     private void init() {
+    
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("downloads");
+        
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(new DownloadsAdapter(reference));
         
     }
     
