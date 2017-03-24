@@ -20,6 +20,7 @@ import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -72,12 +73,11 @@ public class MainActivity extends AppCompatActivity
     private void init() {
     
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("downloads");
-        reference.orderByChild("uid");
-        reference.startAt(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        reference.endAt(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        
+        Query query = reference.orderByChild("uid").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
         
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new DownloadsAdapter(reference));
+        recyclerView.setAdapter(new DownloadsAdapter(query));
         
     }
     
