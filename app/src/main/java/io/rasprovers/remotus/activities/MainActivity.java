@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.firebase.ui.auth.IdpResponse;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -71,6 +72,9 @@ public class MainActivity extends AppCompatActivity
     private void init() {
     
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("downloads");
+        reference.orderByChild("uid");
+        reference.startAt(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        reference.endAt(FirebaseAuth.getInstance().getCurrentUser().getUid());
         
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(new DownloadsAdapter(reference));

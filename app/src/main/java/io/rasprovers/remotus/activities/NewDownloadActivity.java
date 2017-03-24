@@ -15,8 +15,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,16 +53,17 @@ public class NewDownloadActivity extends AppCompatActivity {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
                 
-                String s = downloadLinkEditText.getText().toString();
-                if(!Patterns.WEB_URL.matcher(s).matches()) {
+                String url = downloadLinkEditText.getText().toString();
+                if(!Patterns.WEB_URL.matcher(url).matches()) {
                     warningTextView.setVisibility(View.VISIBLE);
                 }
                 else {
                     warningTextView.setVisibility(View.INVISIBLE);
-                    Toast.makeText(NewDownloadActivity.this, URLUtil.guessFileName(s,null,null), Toast.LENGTH_SHORT).show();
+                    FirebaseAuth auth = FirebaseAuth.getInstance();
+                    Download download = new Download(new Date().getTime(),URLUtil.guessFileName(url,null,null),auth.getCurrentUser().getUid(),url,"placed");
+                    FirebaseDatabase.getInstance().getReference().child("downloads").push().setValue(download);
+                    Toast.makeText(NewDownloadActivity.this, URLUtil.guessFileName(url,null,null), Toast.LENGTH_SHORT).show();
                 }
-                
-                
             }
         });
         
