@@ -1,5 +1,7 @@
 package io.rasprovers.remotus.adapter;
 
+import android.util.Log;
+
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.Query;
 
@@ -15,6 +17,8 @@ import io.rasprovers.remotus.viewholders.DownloadViewHolder;
 public class DownloadsAdapter extends FirebaseRecyclerAdapter<Download,DownloadViewHolder> {
     
     
+    private static final String TAG =  DownloadsAdapter.class.getSimpleName();
+    
     public DownloadsAdapter(Query ref) {
         super(Download.class, R.layout.item_download, DownloadViewHolder.class, ref);
     }
@@ -28,7 +32,8 @@ public class DownloadsAdapter extends FirebaseRecyclerAdapter<Download,DownloadV
             double total =  ((double) stats.getSize().getTotal()) /( 1024 * 1024 );
             String downloadProgress = transferred + "/" + total + " MB";
             viewHolder.downloadTextView.setText(downloadProgress);
-            viewHolder.progressBar.setProgress(stats.getPercent().intValue());
+            Log.d(TAG, "populateViewHolder: "+ stats.getPercent());
+            viewHolder.progressBar.setProgress((int) (stats.getPercent()*100));
         }
     }
 }
