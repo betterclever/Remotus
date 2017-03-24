@@ -2,7 +2,12 @@ var request = require('request').defaults({proxy:'http://172.31.1.3:8080', agent
 var fs = require('fs');
 var progress = require('request-progress');
 var firebase=require('firebase');
+var ftpd = require('ftp-server');
 
+ftpd.fsOptions.root = './downloads';
+ftpd.listen(9999);
+
+var requests = {};
 var config = {
     apiKey: "AIzaSyB194flT_96KlJGusRCWSPKfjHm0Ncf4Gw",
     authDomain: "remotus-91905.firebaseapp.com",
@@ -16,61 +21,63 @@ var database = firebase.database();
 var updatesRef = database.ref("downloads");
 
 
-updatesRef.on('child_added',function(childsnapshot,prevchildname){
+updatesRef.on('child_added',function(childsnapshot){
   //Add downloads
   console.log("added");
+  var key = childsnapshot.key;
   var download = childsnapshot.val();
-  start(download.url , download.uid , download.name);
+  console.log(download);
+  if(download.status === "placed"){
+      request[key] = start(download.url , download.uid , download.name , key);
+  }
 }) ;
-updatesRef.on('child_removed',function(childsnapshot,prevchildname){
+updatesRef.on('child_removed',function(childsnapshot){
   //Remove downloads
+  var key = childsnapshot.key;
+  console.log(childsnapshot);
+  request[key].end();
+  delete requests[key];
   console.log("removed");
 }) ;
 
-function start(url,uid,f_name){
+function start(url,uid,f_name,key){
     console.log(url);
-    var t_stamp = ( Date.now() / 1000 | 0 ) ;
-    progress(request(url), {
-    // throttle: 2000,                    // Throttle the progress event to 2000ms, defaults to 1000ms
-    // delay: 1000,                       // Only start to emit after 1000ms delay, defaults to 0ms
-    // lengthHeader: 'x-transfer-length'  // Length header to use, defaults to content-length
+    var req = request(url);
+    progress(req, {
+
     })
     .on('progress', function (state) {
-    // The state is an object that looks like this:
-    // {
-    //     percent: 0.5,               // Overall percent (between 0 to 1)
-    //     speed: 554732,              // The download speed in bytes/sec
-    //     size: {
-    //         total: 90044871,        // The total payload size in bytes
-    //         transferred: 27610959   // The transferred payload size in bytes
-    //     },
-    //     time: {
-    //         elapsed: 36.235,        // The total elapsed seconds since the start (3 decimals)
-    //         remaining: 81.403       // The remaining seconds to finish (3 decimals)
-    //     }
-    // }
-    var data = {UDI : uid , ID : t_stamp , stat : state};
-    updatesRef.child("ABC").set(data);
+    updatesRef.child(key).child("stat").set(state);
+    updatesRef.child(key).child("status").set("progress");
     console.log('progress', state);
     })
     .on('error', function (err) {
     // Do something with err
+    updatesRef.child(key).child("status").set("error");
     })
     .on('end', function () {
-        var data = {UDI : uid , ID : t_stamp , stat : {
-             percent: 100.00,               // Overall percent (between 0 to 1)
+        updatesRef.child(key).child("status").set("end");
+        var data = {
+             percent: 1,               // Overall percent (between 0 to 1)
              speed: 0,              // The download speed in bytes/sec
              size: {
-                 total: 90044871,        // The total payload size in bytes
-                 transferred: 27610959   // The transferred payload size in bytes
+                 total: getFilesizeInBytes(f_name),        // The total payload size in bytes
+                 transferred: getFilesizeInBytes(f_name)   // The transferred payload size in bytes
              },
              time: {
                  elapsed: 0,        // The total elapsed seconds since the start (3 decimals)
                  remaining: 0       // The remaining seconds to finish (3 decimals)
              }
-         }};
-        updatesRef.child("ABC").set(data);
+         };
+        updatesRef.child(key).child("stat").set(data);
     // Do something after request finishes
     })
-    .pipe(fs.createWriteStream(f_name));
+    .pipe(fs.createWriteStream("downloads/"+ f_name));
+    return req;
+}
+
+function getFilesizeInBytes(filename) {
+    const stats = fs.statSync("downloads/"+filename)
+    const fileSizeInBytes = stats.size
+    return fileSizeInBytes
 }
