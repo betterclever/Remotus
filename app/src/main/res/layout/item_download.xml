@@ -57,16 +57,6 @@
                 android:layout_marginEnd="12dp"
                 android:text="Paused"/>
 
-            <Button
-                android:id="@+id/revertStatusButton"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/downloadTextView"
-                android:layout_alignBottom="@+id/downloadTextView"
-                android:layout_alignEnd="@+id/statusTextView"
-                android:text="Resume"/>
-
 
         </RelativeLayout>
 

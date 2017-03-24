@@ -8,7 +8,7 @@ public class Download {
 
     @SerializedName("ID")
     @Expose
-    private Integer iD;
+    private Integer id;
     @SerializedName("name")
     @Expose
     private String name;
@@ -21,13 +21,24 @@ public class Download {
     @SerializedName("url")
     @Expose
     private String url;
-
-    public Integer getID() {
-        return iD;
+    @SerializedName("status")
+    @Expose
+    private String status;
+    
+    public Download(Integer id, String name, String uid, String url, String status) {
+        this.id = id;
+        this.name = name;
+        this.uid = uid;
+        this.url = url;
+        this.status = status;
+    }
+    
+    public Integer getId() {
+        return id;
     }
 
-    public void setID(Integer iD) {
-        this.iD = iD;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -61,5 +72,12 @@ public class Download {
     public void setUrl(String url) {
         this.url = url;
     }
-
+    
+    public String getStatus() {
+        return status;
+    }
+    
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }
