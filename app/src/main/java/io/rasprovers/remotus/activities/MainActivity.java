@@ -1,6 +1,8 @@
 package io.rasprovers.remotus.activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -15,12 +17,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+
+import java.net.URL;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,13 +60,10 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
-                
                 startActivity(new Intent(MainActivity.this,NewDownloadActivity.class));
             }
         });
-        
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
             this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -71,13 +76,27 @@ public class MainActivity extends AppCompatActivity
     }
     
     private void init() {
-    
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        final View header=navigationView.getHeaderView(0);
+        //View view=navigationView.inflateHeaderView(R.layout.nav_header_main);
+        ((TextView)header.findViewById(R.id.name)).setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+        ((TextView)header.findViewById(R.id.email)).setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+
+        try {
+            Glide.with(this).load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl()).into(((ImageView) header.findViewById(R.id.imageView)));
+        }catch (Exception e){
+            Toast.makeText(getApplicationContext(),e+"",Toast.LENGTH_LONG).show();
+        }
+
+
+
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("downloads");
         
         Query query = reference.orderByChild("uid").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
         
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new DownloadsAdapter(query));
+        recyclerView.setAdapter(new DownloadsAdapter(this, query));
         
     }
     
@@ -119,17 +138,16 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         
-        if (id == R.id.nav_camera) {
+        if (id == R.id.settings) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+
+        } else if (id == R.id.downloads) {
             
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.ftf) {
             
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.settings) {
             
-        } else if (id == R.id.nav_share) {
-            
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.logout) {
             
         }
         

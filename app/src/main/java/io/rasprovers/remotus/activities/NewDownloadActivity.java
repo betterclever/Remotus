@@ -1,6 +1,7 @@
 package io.rasprovers.remotus.activities;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -50,7 +53,7 @@ public class NewDownloadActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Adding to Queue", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
                 
                 String url = downloadLinkEditText.getText().toString();
@@ -60,9 +63,17 @@ public class NewDownloadActivity extends AppCompatActivity {
                 else {
                     warningTextView.setVisibility(View.INVISIBLE);
                     FirebaseAuth auth = FirebaseAuth.getInstance();
-                    Download download = new Download(new Date().getTime(),URLUtil.guessFileName(url,null,null),auth.getCurrentUser().getUid(),url,"placed");
-                    FirebaseDatabase.getInstance().getReference().child("downloads").push().setValue(download);
-                    Toast.makeText(NewDownloadActivity.this, URLUtil.guessFileName(url,null,null), Toast.LENGTH_SHORT).show();
+                    Download download = new Download(new Date().getTime(),
+                            URLUtil.guessFileName(url,null,null),auth.getCurrentUser().getUid(),url,"placed");
+                    FirebaseDatabase.getInstance().getReference().child("downloads")
+                            .push().setValue(download).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Toast.makeText(NewDownloadActivity.this, "Added Successfully", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    });
+
                 }
             }
         });
@@ -94,5 +105,6 @@ public class NewDownloadActivity extends AppCompatActivity {
             warningTextView.setVisibility(View.INVISIBLE);
         }
     }
-    
+
+
 }

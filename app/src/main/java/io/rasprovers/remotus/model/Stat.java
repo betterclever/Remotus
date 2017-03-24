@@ -14,7 +14,7 @@ public class Stat {
     private Size size;
     @SerializedName("speed")
     @Expose
-    private Double speed;
+    private double speed;
     @SerializedName("time")
     @Expose
     private Time time;
@@ -35,7 +35,7 @@ public class Stat {
         this.size = size;
     }
 
-    public Double getSpeed() {
+    public double getSpeed() {
         return speed;
     }
 
