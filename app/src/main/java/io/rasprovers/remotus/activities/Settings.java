@@ -29,7 +29,6 @@ public class Settings extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        System.out.println("====================>>"+sharedpreferences.getString("Email",""));
 
 
 
@@ -48,20 +47,17 @@ public class Settings extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedpreferences.edit();
 
         editor.putString("Password",((TextView) findViewById(R.id.password)).getText()+"");
-        editor.putString("Eamil",((TextView) findViewById(R.id.email)).getText()+"");
         editor.putString("host",((TextView) findViewById(R.id.host)).getText()+"");
         editor.commit();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        mAuth.createUserWithEmailAndPassword(((TextView) findViewById(R.id.email)).getText()+""
+        mAuth.createUserWithEmailAndPassword(mAuth.getCurrentUser().getEmail()
                 , ((TextView) findViewById(R.id.password)).getText()+"").addOnCompleteListener
                 (new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    Toast.makeText(Settings.this, "Settings saved!!", Toast.LENGTH_LONG).show();
-                    startActivity(new Intent(Settings.this, MainActivity.class));
-                    finish();
-                }
+                Toast.makeText(Settings.this, "Settings saved!!", Toast.LENGTH_LONG).show();
+                startActivity(new Intent(Settings.this, MainActivity.class));
+                finish();
                 progressdialog.hide();
                 progressdialog.dismiss();
             }});
