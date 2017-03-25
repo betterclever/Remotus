@@ -145,6 +145,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.downloads) {
             
         } else if (id == R.id.ftf) {
+            startActivity(new Intent(this, DownloadFilesActivity.class));
             
         } else if (id == R.id.settings) {
             
