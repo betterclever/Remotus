@@ -1,11 +1,7 @@
-var request = require('request').defaults({proxy:'http://172.31.1.3:8080', agent:false});
+var request = require('request');
 var fs = require('fs');
 var progress = require('request-progress');
 var firebase=require('firebase');
-var ftpd = require('ftp-server');
-
-ftpd.fsOptions.root = './downloads';
-ftpd.listen(9999);
 
 var requests = {};
 var config = {
@@ -31,6 +27,19 @@ updatesRef.on('child_added',function(childsnapshot){
       request[key] = start(download.url , download.uid , download.name , key);
   }
 }) ;
+
+updatesRef.on('child_changed',function(childsnapshot){
+  //Add downloads
+  console.log("added");
+  var key = childsnapshot.key;
+  var download = childsnapshot.val();
+  console.log(download);
+  if(download.status === "readded"){
+      request[key] = start(download.url , download.uid , download.name , key);
+  }
+}) ;
+
+
 updatesRef.on('child_removed',function(childsnapshot){
   //Remove downloads
   var key = childsnapshot.key;
