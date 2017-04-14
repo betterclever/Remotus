@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -29,6 +30,8 @@ public class LoginActivity extends AppCompatActivity {
     Button googleButton;
     @BindView(R.id.rootView)
     ConstraintLayout rootView;
+    @BindView(R.id.textView2)
+    TextView textView2;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,17 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         
+        
+        
+        /*final ExplosionField explosionField = ExplosionField.attach2Window(this);
+        textView2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                explosionField.explode(textView2);
+            }
+        });
+        //explosionField.explode(textView2);
+        */
         googleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

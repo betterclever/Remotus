@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity
 
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("downloads");
-        
+        reference.keepSynced(true);
         Query query = reference.orderByChild("uid").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
         
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

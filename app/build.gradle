@@ -42,6 +42,7 @@ dependencies {
     compile 'com.google.firebase:firebase-messaging:10.0.1'
     compile 'com.firebaseui:firebase-ui-auth:1.2.0'
     compile 'com.firebaseui:firebase-ui-database:1.2.0'
+    compile 'tyrantgit:explosionfield:1.0.1'
     compile 'com.adeel:easyFTP:1.0'
 
     testCompile 'junit:junit:4.12'

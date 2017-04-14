@@ -47,6 +47,11 @@ public class DownloadsAdapter extends FirebaseRecyclerAdapter<Download,DownloadV
             double kbPerSec = (model.getStat().getSpeed()) / (1024);
             viewHolder.speed.setText(round(kbPerSec,2)+" KB/S");
         }
+        else {
+            viewHolder.downloadTextView.setText("");
+            viewHolder.progressBar.setProgress(0);
+            viewHolder.speed.setText("");
+        }
 
         viewHolder.restart.setOnClickListener(null);
 
@@ -54,7 +59,7 @@ public class DownloadsAdapter extends FirebaseRecyclerAdapter<Download,DownloadV
             @Override
             public void onClick(View view) {
                 DatabaseReference ref = DownloadsAdapter.this.getRef(position);
-                ref.child("status").setValue("placed").addOnCompleteListener(new OnCompleteListener<Void>() {
+                ref.child("status").setValue("readded").addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Toast.makeText(context, "Download Restarted", Toast.LENGTH_LONG).show();
